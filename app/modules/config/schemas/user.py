@@ -1,4 +1,4 @@
-﻿from datetime import datetime
+from datetime import datetime
 
 from pydantic import BaseModel, ConfigDict, Field
 
@@ -36,6 +36,14 @@ class UserUpdate(BaseModel):
     avatar: str | None = Field(default=None, description="头像")
     gender: str | None = Field(default=None, description="性别")
     remark: str | None = Field(default=None, description="备注")
+
+
+class UserListQuery(BaseModel):
+    page: int = Field(default=1, ge=1, description="页码")
+    page_size: int = Field(default=10, ge=1, le=100, description="每页数量")
+    username: str | None = Field(default=None, description="账号模糊查询")
+    phone: str | None = Field(default=None, description="手机号模糊查询")
+    real_name: str | None = Field(default=None, description="姓名模糊查询")
 
 
 class UserOut(BaseModel):

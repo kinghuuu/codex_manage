@@ -1,7 +1,7 @@
-from fastapi import APIRouter, Depends, HTTPException, Query, status
+from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.modules.config.schemas.user import UserCreate, UserUpdate
+from app.modules.config.schemas.user import UserCreate, UserListQuery, UserUpdate
 from app.modules.config.services.auth import get_current_active_user
 from app.modules.config.services.user import (
     create_user,
@@ -26,12 +26,11 @@ router = APIRouter(
 
 @router.get("", summary="用户列表")
 async def list_users_router(
-    page: int = Query(default=1, ge=1, description="页码"),
-    page_size: int = Query(default=10, ge=1, le=100, description="每页数量"),
+    query: UserListQuery = Depends(),
     db: AsyncSession = Depends(get_db),
 ):
-    logger.info("list users: page=%s page_size=%s", page, page_size)
-    data = await list_users(db, page=page, page_size=page_size)
+    logger.info("list users: query=%s", query.model_dump())
+    data = await list_users(db, query=query)
     return success_response(message="获取成功", data=data)
 
 

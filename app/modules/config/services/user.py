@@ -1,9 +1,9 @@
-﻿from fastapi import HTTPException, status
+from fastapi import HTTPException, status
 from sqlalchemy import func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.modules.config.models.user import Users
-from app.modules.config.schemas.user import UserCreate, UserUpdate
+from app.modules.config.schemas.user import UserCreate, UserListQuery, UserUpdate
 from app.utils.security import PasswordUtils
 
 USER_OUTPUT_FIELDS = (
@@ -38,13 +38,34 @@ async def get_user_by_username(db: AsyncSession, username: str) -> Users | None:
     return result.scalar_one_or_none()
 
 
-async def list_users(db: AsyncSession, page: int = 1, page_size: int = 10) -> dict:
-    page = max(page, 1)
-    page_size = min(max(page_size, 1), 100)
+async def list_users(
+    db: AsyncSession,
+    query: UserListQuery,
+) -> dict:
+    page = max(query.page, 1)
+    page_size = min(max(query.page_size, 1), 100)
 
-    total = await db.scalar(select(func.count()).select_from(Users))
+    filters = []
+    like_fields = (
+        (Users.username, query.username),
+        (Users.phone, query.phone),
+        (Users.real_name, query.real_name),
+    )
+    for column, value in like_fields:
+        if value:
+            value = value.strip()
+            if value:
+                filters.append(column.like(f"%{value}%"))
+
+    total_stmt = select(func.count()).select_from(Users)
+    stmt = select(Users)
+    if filters:
+        total_stmt = total_stmt.where(*filters)
+        stmt = stmt.where(*filters)
+
+    total = await db.scalar(total_stmt)
     stmt = (
-        select(Users)
+        stmt
         .order_by(Users.id.desc())
         .offset((page - 1) * page_size)
         .limit(page_size)
