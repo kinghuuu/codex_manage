@@ -6,6 +6,7 @@ from starlette.middleware.cors import CORSMiddleware
 
 from app.commons.settings import origins
 from app.modules.config.views import auth, user
+from app.modules.news.views import news, history, favorite
 from app.utils.datebase import Base, engine
 from app.utils.exception import register_exceptions
 from app.utils.logger import bind_logger
@@ -35,6 +36,9 @@ async def startup_event() -> None:
 
 app.include_router(auth.router)
 app.include_router(user.router)
+app.include_router(news.router)
+app.include_router(history.router)
+app.include_router(favorite.router)
 
 if __name__ == '__main__':
     import uvicorn
