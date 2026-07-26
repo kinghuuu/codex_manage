@@ -58,7 +58,6 @@ class News(Base):
     __table_args__ = (
         Index("idx_news_category_id", "category_id"),
         Index("idx_news_publish_time", "publish_time"),
-        Index("idx_news_status", "status"),
     )
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True, comment="新闻ID")
