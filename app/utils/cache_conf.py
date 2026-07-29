@@ -1,18 +1,25 @@
+﻿
 import json
+import os
 from datetime import datetime, date
 from typing import Any
 
 import redis.asyncio as redis
 
-REDIS_HOST = "localhost"
-REDIS_PORT = 6379
-REDIS_DB = 0
+from dotenv import load_dotenv
+
+load_dotenv()
+
+
+REDIS_HOST = os.getenv("REDIS_HOST")
+REDIS_PORT = int(os.getenv("REDIS_PORT"))
+REDIS_DB = int(os.getenv("REDIS_DB"))
 
 # 创建 redis 的连接对象
 redis_client = redis.Redis(
     host=REDIS_HOST,  # Redis 服务器的主机地址
     port=REDIS_PORT,  # Redis 端口号
-    db=0,  # Redis 数据库编号，0~15
+    db=REDIS_DB,  # Redis 数据库编号，0~15
     decode_responses=True,  # 是否将字节数据解码为字符串
     # password=None,  # Redis 的密码，如果没有密码，可以设置为 None，也可以注释掉
 )
@@ -58,3 +65,5 @@ async def set_cache(key: str, value: Any, expire: int = 3600):
 def json_serializer(obj):
     if isinstance(obj, (datetime, date)):
         return obj.isoformat()  # 将日期时间对象转换为 ISO 格式字符串
+
+

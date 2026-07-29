@@ -1,4 +1,4 @@
-# 指定 Docker Compose 文件的版本。'3.8' 是目前最常用、兼容性最好的版本之一。
+﻿# 指定 Docker Compose 文件的版本。'3.8' 是目前最常用、兼容性最好的版本之一。
 version: '3.8'
 
 # services 是核心部分，下面定义的所有服务（容器）都在这里配置。
@@ -42,6 +42,7 @@ services:
     # 确保 Redis 容器先启动，Python 服务再启动
     depends_on:
       - redis
+      - postgres
 
   # Redis 缓存服务
   # 容器之间可以通过名称来引用
@@ -83,6 +84,7 @@ services:
     volumes:
       # 数据持久化：防止容器重启后数据丢失
       - ./postgres-data:/var/lib/postgresql/data
+
 
 
 

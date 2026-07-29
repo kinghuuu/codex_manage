@@ -1,3 +1,4 @@
+﻿
 """Async database configuration for PostgreSQL."""
 
 from collections.abc import AsyncGenerator
@@ -10,17 +11,21 @@ from sqlalchemy.ext.asyncio import (
     create_async_engine,
 )
 from sqlalchemy.orm import DeclarativeBase
+from dotenv import load_dotenv
+
+
+load_dotenv()
 
 
 class Base(DeclarativeBase):
     pass
 
 
-DB_HOST = os.getenv("DB_HOST", "127.0.0.1")
-DB_PORT = os.getenv("DB_PORT", "5432")
-DB_USER = os.getenv("DB_USER", "postgres")
-DB_PASSWORD = os.getenv("DB_PASSWORD", "postgres")
-DB_NAME = os.getenv("DB_NAME", "codex_manage")
+DB_HOST = os.getenv("DB_HOST")
+DB_PORT = os.getenv("DB_PORT")
+DB_USER = os.getenv("DB_USER")
+DB_PASSWORD = os.getenv("DB_PASSWORD")
+DB_NAME = os.getenv("DB_NAME")
 
 ASYNC_DATABASE_URL = os.getenv(
     "DATABASE_URL",
@@ -61,3 +66,5 @@ async def get_db() -> AsyncGenerator[AsyncSession, None]:
 async def dispose_engine() -> None:
     """Close all engine connections."""
     await async_engine.dispose()
+
+
