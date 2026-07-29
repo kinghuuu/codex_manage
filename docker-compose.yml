@@ -4,8 +4,7 @@ version: '3.8'
 # services 是核心部分，下面定义的所有服务（容器）都在这里配置。
 # Compose 项目栈（分组名，不是容器）
 services:
-  # Python 后端服务
-  # 这个名称是容器之间的唯一标识符，不能重复。
+  # Python 后端服务，这个名称是容器之间的唯一标识符，不能重复。
   codex-manage-service:
     # 告诉 Docker Compose 使用当前目录（.）下的 Dockerfile 来自动构建镜像。
     build: .
@@ -61,5 +60,30 @@ services:
       - ./redis-data:/data
     # 重启策略
     restart: always
+
+  # PostgreSQL 数据库服务
+  postgres:
+    # 使用轻量且稳定的官方镜像
+    image: "postgres:15-alpine"
+    container_name: my-postgres
+    restart: always
+    # 端口映射：宿主机 15400 -> 容器 5432
+    # 如果不需要本地 Navicat/DBeaver 直连，可删除此行以增强安全性
+    # 只有启动了这个 docker postgres 容器，然后才能用 DBeaver 连接上15400端口的数据库
+    ports:
+      - "15400:5432"
+    environment:
+      # 可选：初始化时自动创建普通用户
+      - POSTGRES_USER=root
+      # 必须配置：设置超级用户 postgres 的密码
+      - POSTGRES_PASSWORD=root123
+      # 可选：初始化时自动创建数据库
+      - POSTGRES_DB=codex_manage
+      - TZ=Asia/Shanghai
+    volumes:
+      # 数据持久化：防止容器重启后数据丢失
+      - ./postgres-data:/var/lib/postgresql/data
+
+
 
 

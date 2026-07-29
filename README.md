@@ -105,7 +105,7 @@ docker compose up -d --build
 相关概念：
 1.Dockerfile：负责“造”（构建镜像）
 1.docker-compose.yml：负责“用”（运行容器、映射端口、设置环境变量等）
-1.执行docker compose up -d --build会创建镜像和容器，Docker Compose 项目分组名称自动命名为该项目名称。
+1.执行docker compose up -d --build会创建镜像和容器，Docker Compose 项目分组名称自动命名为该项目的名称。
 
 ```text
 部署步骤：
@@ -123,10 +123,6 @@ docker compose up -d --build
 5.验证部署是否成功
     查看运行状态：docker compose ps (STATUS 列显示为 Up)
     查看启动日志：docker compose logs -f (看到类似 Uvicorn running on http://0.0.0.0:8011 的日志，说明应用已经成功启动)
-
-日常运维常用命令速查：
-    停止并删除容器（不会删除镜像）：docker compose down
-    仅重启容器（不重新构建镜像）：docker compose restart
 ```
 
 
@@ -134,6 +130,7 @@ docker compose up -d --build
 ```shell
 pip install -r requirements.txt
 ```
+
 
 ## 导出当前 Python 环境中所有已安装包及其精确版本号
 ```shell
