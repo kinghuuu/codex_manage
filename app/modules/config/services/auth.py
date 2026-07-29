@@ -4,7 +4,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.modules.config.models.user import Users
 from app.modules.config.schemas.user import UserCreate, UserLogin, UserRegister
 from app.modules.config.services.user import create_user, get_user_by_username, serialize_user
-from app.utils.datebase import get_db
+from app.utils.database import get_db
 from app.utils.jwt import create_user_token, get_user_token
 from app.utils.logger import get_logger
 from app.utils.security import PasswordUtils

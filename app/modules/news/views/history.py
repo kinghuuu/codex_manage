@@ -5,7 +5,7 @@ from app.modules.config.models import Users
 from app.modules.config.services.auth import get_current_active_user
 from app.modules.news.schemas.history import HistoryAddRequest, HistoryNewsItemResponse, HistoryListResponse
 from app.modules.news.services.history import add_history, get_history_list, delete_history, clear_history
-from app.utils.datebase import get_db
+from app.utils.database import get_db
 from app.utils.response import success_response
 
 router = APIRouter(

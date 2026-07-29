@@ -4,7 +4,7 @@ from fastapi import FastAPI
 from app.modules.config.views import auth, user
 from app.modules.news.views import news, history, favorite
 from app.utils import test_websocket, test_email
-from app.utils.datebase import Base, engine
+from app.utils.database import Base, engine
 from app.utils.logger import bind_logger
 from app.utils.middleware import register_middlewares
 

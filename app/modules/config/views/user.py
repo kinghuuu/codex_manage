@@ -11,7 +11,7 @@ from app.modules.config.services.user import (
     serialize_user,
     update_user,
 )
-from app.utils.datebase import get_db
+from app.utils.database import get_db
 from app.utils.logger import get_logger
 from app.utils.response import success_response
 

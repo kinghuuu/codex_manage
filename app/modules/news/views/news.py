@@ -5,7 +5,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.modules.config.services.auth import get_current_active_user
 from app.modules.news.services.news import get_news_categories, get_news_list, get_news_count, get_news_detail, \
     increase_news_views, get_related_news
-from app.utils.datebase import get_db
+from app.utils.database import get_db
 from app.utils.response import success_response
 
 router = APIRouter(

@@ -6,7 +6,7 @@ from app.modules.config.services.auth import get_current_active_user
 from app.modules.news.schemas.favorite import FavoriteCheckResponse, FavoriteAddRequest, FavoriteListResponse
 from app.modules.news.services.favorite import check_favorite_exists, add_favorite, remove_favorite, get_favorite_list, \
     clear_favorite_list
-from app.utils.datebase import get_db
+from app.utils.database import get_db
 from app.utils.response import success_response
 
 router = APIRouter(
