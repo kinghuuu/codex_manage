@@ -6,6 +6,7 @@ JWT 其实定义了一种基于 Token 的会话方式，也就是通过一种规
 JWT 是base64编码，不是加密，所以敏感信息不要放在 payload 中
 """
 from datetime import datetime, timezone, timedelta
+from typing import Annotated
 
 import jwt
 from fastapi import Depends, HTTPException
@@ -39,7 +40,8 @@ def create_user_token(data: dict):
     return encode_jwt
 
 
-def get_user_token(token: str = Depends(oauth2_scheme)):
+def get_user_token(token: Annotated[str, Depends(oauth2_scheme)]):
+    # 这是之前的写法 def get_user_token(token: str = Depends(oauth2_scheme)):
     """
     获取用户Token
     """

@@ -1,31 +1,30 @@
-"""
-应用入口: 初始化 FastAPI 实例、挂载路由与中间件
-"""
+﻿"""应用入口: 初始化 FastAPI 实例、挂载路由与中间件"""
 from fastapi import FastAPI
-from starlette.middleware.cors import CORSMiddleware
 
-from app.commons.settings import origins
 from app.modules.config.views import auth, user
 from app.modules.news.views import news, history, favorite
+from app.utils import test_websocket, test_email
 from app.utils.datebase import Base, engine
-from app.utils.exception import register_exceptions
 from app.utils.logger import bind_logger
+from app.utils.middleware import register_middlewares
+
+
+async def my_init(app: FastAPI):
+    # 启动时执行
+    print("my_init 启动了")
+    yield print("my_init 启动完成")
+    # 关闭时执行
+    print("my_init 关闭了")
+
 
 app = FastAPI(
     title="Codex Manage",
+    lifespan=my_init,
 )
 
-logger = bind_logger(app)
+logger = bind_logger(app)  # 绑定 logger
 
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=origins,
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
-
-register_exceptions(app)
+register_middlewares(app)  # 注册中间件 & 异常处理
 
 
 @app.on_event("startup")
@@ -40,11 +39,25 @@ app.include_router(news.router)
 app.include_router(history.router)
 app.include_router(favorite.router)
 
-if __name__ == '__main__':
+app.include_router(test_websocket.router)
+app.include_router(test_email.router)
+
+
+@app.get("/")
+async def root():
+    return {"message": "Hello World"}
+
+
+@app.get("/test")
+async def test():
+    return {"test": "123"}
+
+
+if __name__ == "__main__":
     import uvicorn
 
     uvicorn.run(
         app,
         host="0.0.0.0",
-        port=8010
+        port=8010,
     )

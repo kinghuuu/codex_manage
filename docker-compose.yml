@@ -1,0 +1,65 @@
+# 指定 Docker Compose 文件的版本。'3.8' 是目前最常用、兼容性最好的版本之一。
+version: '3.8'
+
+# services 是核心部分，下面定义的所有服务（容器）都在这里配置。
+# Compose 项目栈（分组名，不是容器）
+services:
+  # Python 后端服务
+  # 这个名称是容器之间的唯一标识符，不能重复。
+  codex-manage-service:
+    # 告诉 Docker Compose 使用当前目录（.）下的 Dockerfile 来自动构建镜像。
+    build: .
+
+    # 给运行起来的容器起一个固定的名字。
+    # 如果不写这个，Docker 会自动生成类似 `项目名_codex-manage_1` 这种长名字。
+    # 有了这个名字，你查看日志时可以直接用 `docker logs codex-manage-service`，非常方便。
+    container_name: my-codex-manage-service
+
+    # 端口映射：宿主机端口:容器内部端口
+    # 意思是：把服务器（宿主机）的 8011 端口，和容器内部应用的 8011 端口打通。
+    # 这样外部用户才能通过 `http://服务器IP:8011` 访问到你的程序。
+    ports:
+      - "8011:8011"
+
+    # 重启策略：always 表示无论容器是因为报错崩溃，还是服务器重启，
+    # Docker 都会自动把它拉起来，保证你的服务 24 小时不间断。
+    restart: always
+
+    # 向容器内部注入环境变量。
+    # 这里注入了时区 TZ=Asia/Shanghai。配合你 Dockerfile 里的时区设置，
+    # 能确保 Python 代码里获取到的时间（如 datetime.now()）也是标准的北京时间。
+    environment:
+      - TZ=Asia/Shanghai
+
+    # 部署和资源限制配置（通常用于生产环境，防止单个应用把整个服务器的内存吃光）。
+    deploy:
+      resources:
+        limits:
+          # 限制这个容器最多只能使用 512MB 内存。
+          # 如果你的 Python 应用发生内存泄漏，最多也就占用 512MB，
+          # 超过这个限制容器会被自动杀掉并重启，从而保护服务器上的其他服务。
+          memory: 512M
+
+    # 确保 Redis 容器先启动，Python 服务再启动
+    depends_on:
+      - redis
+
+  # Redis 缓存服务
+  # 容器之间可以通过名称来引用
+  redis:
+    # 直接从 Docker Hub 拉取官方的 Redis 镜像（这里使用轻量级的 alpine 版本）
+    image: "redis:7.0-alpine"
+    # 给 Redis 容器起一个固定名字
+    container_name: my-redis
+    # 端口映射：如果你想在本地电脑用 Redis 客户端工具（如 RedisInsight）连接它，需要开放端口
+    # 如果仅仅是 Python 代码内部访问，这行其实可以删掉
+    ports:
+      - "6379:6379"
+    # 数据持久化：将容器内的 /data 目录挂载到本地的 ./redis-data 文件夹
+    # 这样即使容器被删除重建，你的 Redis 缓存数据也不会丢失
+    volumes:
+      - ./redis-data:/data
+    # 重启策略
+    restart: always
+
+

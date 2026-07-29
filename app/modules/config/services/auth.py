@@ -13,7 +13,7 @@ logger = get_logger(__name__)
 
 
 async def login(db: AsyncSession, user_data: UserLogin) -> dict:
-    logger.info("login: username=%s", user_data.username)
+    logger.info("login服务: username=%s", user_data.username)
 
     """用户登录"""
     user = await get_user_by_username(db, user_data.username)
