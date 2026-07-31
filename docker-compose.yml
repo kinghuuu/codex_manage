@@ -20,15 +20,21 @@ services:
     ports:
       - "8011:8011"
 
-    # 重启策略：always 表示无论容器是因为报错崩溃，还是服务器重启，
-    # Docker 都会自动把它拉起来，保证你的服务 24 小时不间断。
-    restart: always
+    # 重启策略：
+    # always 表示无论容器是因为报错崩溃，还是服务器重启，Docker 都会自动把它拉起来，保证你的服务 24 小时不间断。
+    # unless-stopped：表示总是重启容器，除非容器被手动停止。
+    restart: unless-stopped
+    env_file:
+      - .env
 
     # 向容器内部注入环境变量。
     # 这里注入了时区 TZ=Asia/Shanghai。配合你 Dockerfile 里的时区设置，
     # 能确保 Python 代码里获取到的时间（如 datetime.now()）也是标准的北京时间。
     environment:
       - TZ=Asia/Shanghai
+      - DB_HOST=postgres
+      - DB_PORT=5432
+      - REDIS_HOST=redis
 
     # 部署和资源限制配置（通常用于生产环境，防止单个应用把整个服务器的内存吃光）。
     deploy:
@@ -60,14 +66,14 @@ services:
     volumes:
       - ./redis-data:/data
     # 重启策略
-    restart: always
+    restart: unless-stopped
 
   # PostgreSQL 数据库服务
   postgres:
     # 使用轻量且稳定的官方镜像
     image: "postgres:15-alpine"
     container_name: my-postgres
-    restart: always
+    restart: unless-stopped
     # 端口映射：宿主机 15400 -> 容器 5432
     # 如果不需要本地 Navicat/DBeaver 直连，可删除此行以增强安全性
     # 只有启动了这个 docker postgres 容器，然后才能用 DBeaver 连接上15400端口的数据库
