@@ -3,6 +3,7 @@ from fastapi import FastAPI
 
 from app.modules.config.views import auth, user
 from app.modules.news.views import news, history, favorite
+from app.modules.tools.views import weather
 from app.utils import test_websocket, test_email
 from app.utils.database import Base, engine, dispose_engine
 from app.utils.cache_conf import redis_client
@@ -61,6 +62,7 @@ app.include_router(user.router)
 app.include_router(news.router)
 app.include_router(history.router)
 app.include_router(favorite.router)
+app.include_router(weather.router)
 
 app.include_router(test_websocket.router)
 app.include_router(test_email.router)

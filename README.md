@@ -26,6 +26,13 @@ codex_manage/
 │       │       ├── news.py        # 新闻内容
 │       │       ├── history.py     # 历史记录
 │       │       └── favorite.py    # 收藏
+│       ├── tools/                 # 各个工具实现模块
+│       │   ├── __init__.py
+│       │   ├── models/            # 数据模型
+│       │   ├── schemas/           # 数据结构
+│       │   ├── services/          # 业务服务
+│       │   └── views/             # 路由
+│       │       └── weather.py     # 天气查询
 │       └── ...                    # 其他一级业务模块
 ├── README.md
 └── venv/                          # 本地虚拟环境
