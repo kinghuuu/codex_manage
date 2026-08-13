@@ -62,4 +62,5 @@ temp/
 
 postgres-data/
 redis-data/
+.codefree/
 
