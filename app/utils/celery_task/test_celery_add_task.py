@@ -2,11 +2,13 @@
 需要先启动celery任务：
 celery -A app.commons.celery_task worker -l info -P solo
 """
+from datetime import datetime, timedelta
 
 import redis
 import json
 from app.commons.celery_task.crawl_task import crawl_baidu, crawl_csdnblog
 from app.commons.celery_task.celery import app
+from app.commons.celery_task.user_task import send_email
 
 
 def test_add_task():
@@ -37,5 +39,16 @@ def test_add_task():
         app.close()  # 清理连接。 这里不会停止 Worker，只是关闭客户端连接。
 
 
+# 提交延迟任务，延迟 10 秒给761751953@qq.com 发送邮件
+def test_delay_task():
+    eta = datetime.utcnow() + timedelta(seconds=10)
+    res = send_email.apply_async(
+        args=['761751953@qq.com'],
+        eta=eta
+    )
+    print('res:', res)
+
+
 if __name__ == '__main__':
-    test_add_task()
+    # test_add_task()
+    test_delay_task()
